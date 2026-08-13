@@ -1,0 +1,11 @@
+{
+  "name": "adn-player-instance",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Instance ADN FAMILY du player de documents (doc.adnfamily.com) — câblage seul, le player est une dépendance.",
+  "license": "AGPL-3.0-or-later",
+  "engines": { "node": ">=20" },
+  "dependencies": {
+    "discovery-media-player": "0.1.4"
+  }
+}
