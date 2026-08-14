@@ -28,7 +28,7 @@ servaient une version périmée sans que personne ne le voie.
 
 ### La version est épinglée, sans accent circonflexe
 
-`"discovery-media-player": "0.1.11"`, pas `"^0.1.11"`.
+`"discovery-media-player": "0.1.12"`, pas `"^0.1.12"`.
 
 Le player se déploie **avant** ses applications hôtes — l'inverse fait disparaître une
 fonctionnalité partout d'un coup, sans erreur visible. Cet ordre suppose que quelqu'un décide

@@ -6,6 +6,6 @@
   "license": "AGPL-3.0-or-later",
   "engines": { "node": ">=20" },
   "dependencies": {
-    "discovery-media-player": "0.1.11"
+    "discovery-media-player": "0.1.12"
   }
 }
