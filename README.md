@@ -28,7 +28,7 @@ servaient une version périmée sans que personne ne le voie.
 
 ### La version est épinglée, sans accent circonflexe
 
-`"discovery-media-player": "0.1.7"`, pas `"^0.1.7"`.
+`"discovery-media-player": "0.1.8"`, pas `"^0.1.8"`.
 
 Le player se déploie **avant** ses applications hôtes — l'inverse fait disparaître une
 fonctionnalité partout d'un coup, sans erreur visible. Cet ordre suppose que quelqu'un décide
@@ -46,6 +46,7 @@ publier contiendrait quelque chose qui n'a rien à y faire.**
 | Variable | Rôle |
 |---|---|
 | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_PUBLISHABLE_KEY` | la base **dédiée** de l'instance |
+| `PLAYER_AUTH_URL`, `PLAYER_AUTH_KEY` | ⚠️ le projet Supabase qui ÉMET les jetons des membres — celui de l'application hôte, **pas** celui ci-dessus. Deux rôles, deux variables : la base appartient à l'instance, l'identité appartient à l'hôte. `PLAYER_AUTH_KEY` n'a **aucun repli** : une clé qui suivrait un changement de destinataire enverrait un secret au mauvais projet. |
 | `PLAYER_HOST_FETCH_BASE` | préfixe d'URL de la route de fichiers de l'hôte — ⚠️ **barre finale comprise** |
 | `PLAYER_HOST_FETCH_SECRET` | secret partagé avec l'hôte, en en-tête, jamais en query |
 | `PLAYER_HOST_AUTHZ_URL` | qui a le droit de diffuser — répond l'hôte, pas le player |
