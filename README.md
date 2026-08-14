@@ -28,7 +28,7 @@ servaient une version périmée sans que personne ne le voie.
 
 ### La version est épinglée, sans accent circonflexe
 
-`"discovery-media-player": "0.1.9"`, pas `"^0.1.9"`.
+`"discovery-media-player": "0.1.11"`, pas `"^0.1.11"`.
 
 Le player se déploie **avant** ses applications hôtes — l'inverse fait disparaître une
 fonctionnalité partout d'un coup, sans erreur visible. Cet ordre suppose que quelqu'un décide
@@ -50,6 +50,7 @@ publier contiendrait quelque chose qui n'a rien à y faire.**
 | `PLAYER_HOST_FETCH_BASE` | préfixe d'URL de la route de fichiers de l'hôte — ⚠️ **barre finale comprise** |
 | `PLAYER_HOST_FETCH_SECRET` | secret partagé avec l'hôte, en en-tête, jamais en query |
 | `PLAYER_HOST_AUTHZ_URL` | qui a le droit de diffuser — répond l'hôte, pas le player |
+| `PLAYER_HOST_SHARE_SECRET` | ⚠️ secret **distinct** de `PLAYER_HOST_FETCH_SECRET`, et dans l'autre sens : il autorise l'hôte à faire CRÉER un lien tracé. Le premier ne circule que vers l'hôte, à chaque fichier — il vit donc dans ses journaux ; lui donner en plus le droit d'écrire ici ferait dépendre l'intégrité des liens de la rétention de journaux d'un tiers. Un secret ne suit ni un changement de destinataire, ni un changement de direction. |
 | `PLAYER_HOST_BRAND_URL` | la marque d'un document, résolue par clé à l'affichage |
 | `PLAYER_BRAND_NAME`, `PLAYER_BRAND_POWERED_BY` | l'identité de l'exploitant |
 | `DOC_FRAME_ANCESTORS` | les domaines autorisés à encadrer la visionneuse |
