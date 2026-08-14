@@ -52,9 +52,15 @@ publier contiendrait quelque chose qui n'a rien à y faire.**
 | `PLAYER_HOST_AUTHZ_URL` | qui a le droit de diffuser — répond l'hôte, pas le player |
 | `PLAYER_HOST_SHARE_SECRET` | ⚠️ secret **distinct** de `PLAYER_HOST_FETCH_SECRET`, et dans l'autre sens : il autorise l'hôte à faire CRÉER un lien tracé. Le premier ne circule que vers l'hôte, à chaque fichier — il vit donc dans ses journaux ; lui donner en plus le droit d'écrire ici ferait dépendre l'intégrité des liens de la rétention de journaux d'un tiers. Un secret ne suit ni un changement de destinataire, ni un changement de direction. |
 | `PLAYER_HOST_BRAND_URL` | la marque d'un document, résolue par clé à l'affichage |
-| `PLAYER_BRAND_NAME`, `PLAYER_BRAND_POWERED_BY` | l'identité de l'exploitant |
+| `PLAYER_BRAND_NAME` | l'identité de l'exploitant |
+| `PLAYER_BRAND_POWERED_BY` | ⚠️ **volontairement vide.** Cette mention s'affiche sous le logo de marque, et elle est posée par INSTANCE alors que le logo, lui, est résolu par LIEN (`PLAYER_HOST_BRAND_URL`). Or cette instance sert deux domaines et deux marques : tout texte fixé ici est donc juste pour l'une et faux pour l'autre. Un visiteur de la carte publique lisait « Powered by ADN FAMILY » sous un logo ValoNeuf, sans savoir ce qu'est ADN Family. Demandé au studio de la rattacher à la marque, à côté de `logo`, `name` et `dark`. La vider ne coûte rien : sur un document interne, le logo était déjà celui d'ADN Family. |
 | `DOC_FRAME_ANCESTORS` | les domaines autorisés à encadrer la visionneuse |
 | `PLAYER_SOURCE_URL` | lien « code source » montré aux lecteurs — **obligation AGPL** |
+
+⚠️ **Une variable vidée sur Vercel ne prend effet qu'au déploiement suivant.** Elle est lue à
+l'exécution par la fonction, mais l'ancienne valeur reste dans l'environnement du
+déploiement en cours : tant qu'aucun nouveau n'est sorti, la page continue de la servir. On
+l'a constaté ici même, en relisant le HTML d'un lien après avoir vidé le champ.
 
 Sans `PLAYER_HOST_AUTHZ_URL`, personne ne peut diffuser de document. Ce n'est pas une panne :
 un droit qu'on ne sait pas accorder ne s'accorde pas.
