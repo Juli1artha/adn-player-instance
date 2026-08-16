@@ -54,6 +54,7 @@ publier contiendrait quelque chose qui n'a rien à y faire.**
 | `PLAYER_HOST_BRAND_URL` | la marque d'un document, résolue par clé à l'affichage |
 | `PLAYER_BRAND_NAME` | l'identité de l'exploitant |
 | `PLAYER_BRAND_POWERED_BY` | ⚠️ **volontairement vide.** Cette mention s'affiche sous le logo de marque, et elle est posée par INSTANCE alors que le logo, lui, est résolu par LIEN (`PLAYER_HOST_BRAND_URL`). Or cette instance sert deux domaines et deux marques : tout texte fixé ici est donc juste pour l'une et faux pour l'autre. Un visiteur de la carte publique lisait « Powered by ADN FAMILY » sous un logo ValoNeuf, sans savoir ce qu'est ADN Family. Demandé au studio de la rattacher à la marque, à côté de `logo`, `name` et `dark`. La vider ne coûte rien : sur un document interne, le logo était déjà celui d'ADN Family. |
+| `PLAYER_INTERNAL_STRICT` | ⚠️ **exactement `1`**, toute autre valeur vaut « absent ». Posée, une session de lecture INTERNE n'est écrite que si elle porte un jeton signé par l'hôte — sans quoi n'importe qui pourrait fabriquer « tel collègue a lu ce document trois heures », et polluer la séparation des populations que tout ce chantier existe pour tenir. Ne la poser qu'après avoir VU le jeton ressortir dans la page servie : sans lui, elle refuse 100 % des sessions internes, et on l'apprend par une table qui cesse de se remplir. |
 | `DOC_FRAME_ANCESTORS` | les domaines autorisés à encadrer la visionneuse |
 | `PLAYER_SOURCE_URL` | lien « code source » montré aux lecteurs — **obligation AGPL** |
 
