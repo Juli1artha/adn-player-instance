@@ -57,6 +57,13 @@ publier contiendrait quelque chose qui n'a rien à y faire.**
 | `DOC_FRAME_ANCESTORS` | les domaines autorisés à encadrer la visionneuse |
 | `PLAYER_SOURCE_URL` | lien « code source » montré aux lecteurs — **obligation AGPL** |
 
+⚠️ **Le compteur anti-abus des sessions internes vit EN MÉMOIRE, donc un redéploiement le
+remet à zéro.** C'est utile à savoir un jour de diagnostic : le player limite les sessions
+internes à **120 par heure et par IP** (`intsess:<ip>`) alors que le navigateur en émet **une
+toutes les 12 secondes**, soit 300 par heure pour un seul lecteur. Un membre qui lit en
+continu épuise donc le quota en 24 minutes, et tout ce qui suit repart en `429` — visible
+dans la console du navigateur, nulle part ailleurs. Signalé au studio le 15 août 2026.
+
 ⚠️ **Une variable vidée sur Vercel ne prend effet qu'au déploiement suivant.** Elle est lue à
 l'exécution par la fonction, mais l'ancienne valeur reste dans l'environnement du
 déploiement en cours : tant qu'aucun nouveau n'est sorti, la page continue de la servir. On
