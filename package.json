@@ -8,6 +8,6 @@
     "node": ">=20"
   },
   "dependencies": {
-    "discovery-media-player": "0.1.47"
+    "discovery-media-player": "0.1.48"
   }
 }
