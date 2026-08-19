@@ -50,7 +50,26 @@ function trouverContrat(dossier, profondeur = 0) {
   return null;
 }
 
-const CONTRAT = trouverContrat(racineDuPaquet);
+// ⚠️ LE RESOLVE EST LE CONTRAT, LA RECHERCHE EST LE REPLI. Depuis 0.1.77 le paquet EXPOSE
+// `discovery-media-player/contrat` : `require.resolve` suivra donc le fichier à travers tous
+// les rangements futurs, sans que nous ayons rien à savoir de son arborescence. C'est la
+// différence qu'on a fini par nommer — une donnée exposée est une promesse, une donnée trouvée
+// est une supposition sur l'arborescence de quelqu'un d'autre.
+//
+// La recherche sous la racine reste EN DESSOUS, pour une seule raison : elle couvre les
+// versions antérieures à 0.1.77, où l'export n'existait pas. Le jour où plus aucune instance
+// ne tourne en deçà, elle pourra partir — mais elle ne coûte rien et elle a déjà servi.
+function localiserContrat() {
+  const exige = createRequire(import.meta.url);
+  try {
+    return { chemin: exige.resolve("discovery-media-player/contrat"), voie: "export" };
+  } catch {
+    const trouve = trouverContrat(racineDuPaquet);
+    return trouve ? { chemin: trouve, voie: "recherche (paquet < 0.1.77)" } : { chemin: null, voie: "aucune" };
+  }
+}
+
+const { chemin: CONTRAT, voie: VOIE } = localiserContrat();
 
 // Les clés que le cockpit d'ADV sait lire (app/api/cron/player-schema/route.ts).
 // Une clé nouvelle n'est pas une erreur ; une clé DISPARUE en est une.
@@ -103,5 +122,5 @@ if (manquantes.length) {
 }
 
 const nouvelles = clefs.filter((k) => !LUES_PAR_ADV.includes(k));
-console.log(`✓ forme de \`manquant\` conforme : { ${clefs.join(", ")} }`);
+console.log(`✓ forme de \`manquant\` conforme : { ${clefs.join(", ")} }  [lu par ${VOIE}]`);
 if (nouvelles.length) console.log(`  (champs nouveaux, non lus par ADV — sans danger : ${nouvelles.join(", ")})`);
