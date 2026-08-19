@@ -80,3 +80,4 @@ AGPL-3.0-or-later, comme le player qu'il fait tourner. L'AGPL couvre aussi ceux 
 cette instance peut en obtenir le code source.
 
 <!-- essai de ruleset, à supprimer -->
+<!-- second essai -->
