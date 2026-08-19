@@ -22,19 +22,49 @@
 //
 // Usage : node verifier-contrat.mjs
 
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { createRequire } from "node:module";
 
-const CONTRAT = "node_modules/discovery-media-player/docs/HOST-CONTRACT.md";
+// ⚠️ ON POINTE LE DOSSIER DU PAQUET, PAS UN CHEMIN EN DUR. Le chemin `docs/HOST-CONTRACT.md`
+// était écrit ici à la main : il survit tant que l'éditeur ne range pas ses fichiers. Or il
+// vient de sortir 2 600 lignes de `handler.js` en deux jours, et cette classe de défaut — « la
+// garde vidée par le rangement » — a déjà tu dix-huit de ses essais et deux du studio. Une
+// garde qui suit un chemin ne garde que jusqu'au prochain déplacement.
+//
+// On demande donc au paquet où il est (`require.resolve`), puis on CHERCHE le contrat sous sa
+// racine. Se rappeler le chemin est ce qu'on vient d'apprendre à ne plus faire.
+const racineDuPaquet = dirname(createRequire(import.meta.url).resolve("discovery-media-player/package.json"));
+
+function trouverContrat(dossier, profondeur = 0) {
+  if (profondeur > 3) return null;
+  for (const e of readdirSync(dossier, { withFileTypes: true })) {
+    if (e.name === "node_modules") continue;
+    const chemin = join(dossier, e.name);
+    if (e.isFile() && e.name === "HOST-CONTRACT.md") return chemin;
+    if (e.isDirectory()) {
+      const trouve = trouverContrat(chemin, profondeur + 1);
+      if (trouve) return trouve;
+    }
+  }
+  return null;
+}
+
+const CONTRAT = trouverContrat(racineDuPaquet);
 
 // Les clés que le cockpit d'ADV sait lire (app/api/cron/player-schema/route.ts).
 // Une clé nouvelle n'est pas une erreur ; une clé DISPARUE en est une.
 const LUES_PAR_ADV = ["migration", "fonction"];
 
+if (!CONTRAT) {
+  console.error(`✗ HOST-CONTRACT.md introuvable sous ${racineDuPaquet} — le paquet a-t-il changé de forme ?`);
+  process.exit(1);
+}
 let texte;
 try {
   texte = readFileSync(CONTRAT, "utf8");
 } catch {
-  console.error(`✗ contrat introuvable : ${CONTRAT} — le paquet est-il installé ?`);
+  console.error(`✗ contrat illisible : ${CONTRAT}`);
   process.exit(1);
 }
 
