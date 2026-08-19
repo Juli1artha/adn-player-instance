@@ -78,3 +78,5 @@ un droit qu'on ne sait pas accorder ne s'accorde pas.
 AGPL-3.0-or-later, comme le player qu'il fait tourner. L'AGPL couvre aussi ceux qui
 **utilisent** le logiciel à travers un réseau : toute personne qui lit un document servi par
 cette instance peut en obtenir le code source.
+
+<!-- essai de ruleset, à supprimer -->
