@@ -8,7 +8,7 @@
     "node": ">=20"
   },
   "dependencies": {
-    "discovery-media-player": "0.1.129"
+    "discovery-media-player": "0.1.131"
   },
   "scripts": {
     "verifier-contrat": "node verifier-contrat.mjs"
