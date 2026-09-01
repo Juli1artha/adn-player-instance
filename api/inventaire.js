@@ -20,6 +20,15 @@
 // redéployer les deux (une variable Vercel ne prend effet qu'au déploiement suivant). Jamais
 // un secret existant réemployé : un secret ne suit ni un changement de destinataire, ni un
 // changement de direction — ici c'est ADV qui interroge l'instance, le sens inverse du fetch.
+//
+// ⚠️ V2 — L'ATTESTATION DE PURGE EST LUE DANS LA BASE. Les migrations de purge du player
+// (0026/0027) posent un COMMENTAIRE sur les colonnes vidées (« le signe qu'un hôte peut
+// sonder », dit la 0026) ; PostgREST l'expose en `description` dans son OpenAPI. La sonde le
+// remonte tel quel (`commentaires`) — c'est côté ADV que « valeurs présentes + purge
+// attestée » devient une alarme. Et parce qu'un détecteur d'absence est confondable avec sa
+// propre panne, `commentaires_exposes` compte TOUTES les colonnes décrites de la base : la
+// base en porte depuis sa naissance (idem_key, write_seq…), donc zéro signifie « le véhicule
+// est mort », jamais « rien à lire ».
 
 const crypto = require("crypto");
 
@@ -78,8 +87,14 @@ module.exports = async (req, res) => {
       return repond(502, { ok: false, error: "openapi sans definitions — rien d'inventorié" });
     }
 
+    // L'auto-test du véhicule : combien de colonnes, toutes tables confondues, portent une
+    // description dans l'OpenAPI. Sert de contrôle positif côté ADV.
+    let commentairesExposes = 0;
+
     const tables = await Promise.all(Object.keys(defs).sort().map(async (nom) => {
-      const colonnes = Object.keys(defs[nom].properties || {});
+      const props = defs[nom].properties || {};
+      const colonnes = Object.keys(props);
+      commentairesExposes += colonnes.filter((c) => typeof props[c].description === "string" && props[c].description).length;
       const sensibles = colonnes.filter((c) => !EXCLUES.has(c) && SENSIBLE.test(c));
       const aCompter = sensibles.filter((c) => A_COMPTER.test(c) && !/hash/i.test(c));
       const [lignes, ...comptes] = await Promise.all([
@@ -87,11 +102,18 @@ module.exports = async (req, res) => {
         ...aCompter.map((c) => compter(nom, `${c}=not.is.null`)),
       ]);
       const restants = {};
-      aCompter.forEach((c, i) => { restants[c] = comptes[i]; });
-      return { nom, lignes, colonnes, sensibles, restants };
+      const commentaires = {};
+      aCompter.forEach((c, i) => {
+        restants[c] = comptes[i];
+        if (typeof props[c].description === "string" && props[c].description) commentaires[c] = props[c].description;
+      });
+      return { nom, lignes, colonnes, sensibles, restants, commentaires };
     }));
 
-    return repond(200, { ok: true, releve_le: new Date().toISOString(), tables });
+    return repond(200, {
+      ok: true, releve_le: new Date().toISOString(),
+      commentaires_exposes: commentairesExposes, tables,
+    });
   } catch (e) {
     return repond(502, { ok: false, error: e instanceof Error ? e.message : String(e) });
   }
