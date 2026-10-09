@@ -37,6 +37,23 @@ version que personne n'a choisie.
 
 Monter de version est donc un commit ici, délibéré, relu.
 
+## Région : Paris (`cdg1`)
+
+`vercel.json` fixe la région des fonctions à **`cdg1`**. Sans elle, Vercel les plaçait à
+**Washington (`iad1`)**, son défaut — mesuré le 9 octobre 2026 sur l'en-tête `x-vercel-id`
+(`cdg1::iad1::…`). Or tout ce que le player appelle est en Europe : sa base (Supabase
+`eu-west-1`, Dublin), l'application hôte (`cdg1`, Paris) qui sert les fichiers et la marque, et
+les sources de documents.
+
+Chaque requête de fichier (pdf.js lit un PDF par morceaux de 64 Ko, chacun une requête) faisait
+donc l'aller-retour France → Washington → Paris → la source → Washington → France, soit quatre
+traversées de l'Atlantique par morceau, plus la lecture du lien dans la base de Dublin depuis
+Washington. La région se règle ici, dans le câblage : c'est un choix d'instance, pas du player.
+
+⚠️ La région change au **déploiement suivant** le merge, comme les variables d'environnement.
+Pour vérifier : `curl -sI https://doc.adnfamily.com/api/doc?asset=pdf | grep x-vercel-id` doit
+répondre `cdg1::cdg1::…` (la deuxième partie est la région de la fonction).
+
 ## Configuration
 
 Aucun secret dans ce dépôt : tout vit dans les variables d'environnement Vercel. C'est une
