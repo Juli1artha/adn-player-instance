@@ -37,22 +37,22 @@ version que personne n'a choisie.
 
 Monter de version est donc un commit ici, délibéré, relu.
 
-## Région : Paris (`cdg1`)
+## Région : Dublin (`dub1`)
 
-`vercel.json` fixe la région des fonctions à **`cdg1`**. Sans elle, Vercel les plaçait à
-**Washington (`iad1`)**, son défaut — mesuré le 9 octobre 2026 sur l'en-tête `x-vercel-id`
-(`cdg1::iad1::…`). Or tout ce que le player appelle est en Europe : sa base (Supabase
-`eu-west-1`, Dublin), l'application hôte (`cdg1`, Paris) qui sert les fichiers et la marque, et
-les sources de documents.
+`vercel.json` fixe la région des fonctions à **`dub1`**, la région de tout ce que le player appelle : sa base
+(Supabase `eu-west-1`, Dublin) et l'application hôte (app.adnfamily.com, en `dub1` depuis le 31 octobre 2026), qui
+sert les fichiers et la marque.
 
-Chaque requête de fichier (pdf.js lit un PDF par morceaux de 64 Ko, chacun une requête) faisait
-donc l'aller-retour France → Washington → Paris → la source → Washington → France, soit quatre
-traversées de l'Atlantique par morceau, plus la lecture du lien dans la base de Dublin depuis
-Washington. La région se règle ici, dans le câblage : c'est un choix d'instance, pas du player.
+L'histoire, pour qui changerait ce réglage : sans lui, Vercel plaçait les fonctions à **Washington (`iad1`)**, son
+défaut — mesuré le 9 octobre 2026 sur l'en-tête `x-vercel-id` (`cdg1::iad1::…`). Chaque requête de fichier (pdf.js
+lit un PDF par morceaux de 64 Ko, chacun une requête) faisait l'aller-retour France → Washington → l'hôte → la source
+→ Washington → France. Le 9 octobre, le player est passé à Paris (`cdg1`), à côté de l'hôte d'alors ; le 31 octobre,
+l'hôte est passé à Dublin, à côté de la base (son PR #3900 : les routes qui enchaînent des lectures y gagnent 10 à
+28 %), et le player l'a suivi. La région se règle ici, dans le câblage : c'est un choix d'instance, pas du player.
 
 ⚠️ La région change au **déploiement suivant** le merge, comme les variables d'environnement.
 Pour vérifier : `curl -sI https://doc.adnfamily.com/api/doc?asset=pdf | grep x-vercel-id` doit
-répondre `cdg1::cdg1::…` (la deuxième partie est la région de la fonction).
+répondre `…::dub1::…` (la deuxième partie est la région de la fonction).
 
 ## Configuration
 
